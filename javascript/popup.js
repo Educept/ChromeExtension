@@ -36,16 +36,12 @@ class App {
       },
       success: (response) => {
         this.uid = response;
-        console.log("validate " + this.uid);
-        console.log('validate ' + this.isOn);
         if (this.uid !== 'null' && this.isOn) {
-          console.log('both exist');
           document.querySelector('#sign-in-form').style.visibility = 'hidden';
           document.querySelector('#sign-in-form').style.height = '0px';
           document.querySelector('#web-app-links').style.visibility = 'visible';
           document.querySelector('#web-app-links').style.height = '1px';
         } else {
-          console.log('one does not exist');
           document.querySelector('#web-app-links').style.visibility = 'hidden';
           document.querySelector('#sign-in-form').style.height = '1px';
           document.querySelector('#sign-in-form').style.visibility = 'visible';
@@ -58,7 +54,6 @@ class App {
   receiveUID() {
     return getUID((uid) => {
       this.uid = uid;
-      console.log("receive id " + this.uid);
       this.initializeExtension();
       if (uid) {
         return uid;
@@ -80,10 +75,21 @@ class App {
         "password": fpassword.value
       },
       success: (response) => {
-        console.log("log in " + response);
+        console.log(response);
         this.uid = response;
         saveState(this.isOn, response);
-        this.initializeExtension();
+
+        if (this.uid !== 'null' && this.isOn) {
+          document.querySelector('#sign-in-form').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '0px';
+          document.querySelector('#web-app-links').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '1px';
+        } else {
+          document.querySelector('#web-app-links').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '1px';
+          document.querySelector('#sign-in-form').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '0px';
+        }
       }
     })
 
@@ -103,10 +109,20 @@ class App {
         "password": fpassword.value
       },
       success: function(response) {
-        console.log("sign up " + response);
         this.uid = response;
         saveState(this.isOn, response);
-        this.initializeExtension();
+
+        if (this.uid !== 'null' && this.isOn) {
+          document.querySelector('#sign-in-form').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '0px';
+          document.querySelector('#web-app-links').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '1px';
+        } else {
+          document.querySelector('#web-app-links').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '1px';
+          document.querySelector('#sign-in-form').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '0px';
+        }
       }
     })
 
@@ -117,7 +133,6 @@ class App {
   getCurrentState() {
     return getStatus((status) => {
       this.isOn = status;
-      console.log('status ' + this.isOn);
       this.turnOnOffExtension();
       this.uid = this.receiveUID();
       if (this.isOn) {

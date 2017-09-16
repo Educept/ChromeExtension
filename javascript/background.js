@@ -1,23 +1,18 @@
-function saveOnOffState(status) {
+function saveState(status, uid) {
   const items = {};
   items['status'] =  status;
+  items['uid'] = uid;
   chrome.storage.sync.set(items);
 }
 
-function getOnOffState(callback) {
+function getStatus(callback) {
   chrome.storage.sync.get('status', (items) => {
     callback(chrome.runtime.lastError ? null : items['status']);
   });
 }
 
-function saveUID(uid) {
-  const items = [];
-  items['uid'] = uid;
-  chrome.storage.sync.set(items);
-}
-
 function getUID(callback) {
-  chrome.storage.sync.get('uid', () => {
+  chrome.storage.sync.get('uid', (items) => {
     callback(chrome.runtime.lastError ? null : items['uid']);
   });
 }

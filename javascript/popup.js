@@ -5,18 +5,34 @@ class App {
 
     this.initializeRipple();
 
-    let uid = this.receiveUID();
+    let uid;
     let isOn;
     this.getCurrentState();
 
     onSwitch.addEventListener('mouseover', this.changeImage.bind(this));
     onSwitch.addEventListener('mouseout', this.changeImage.bind(this));
     onSwitch.addEventListener('click', this.switchState.bind(this));
-    form.addEventListener('submit', this.signIn.bind(this));
+    document.querySelector('#signup').addEventListener('click', this.signUp.bind(this));
+    document.querySelector('#login').addEventListener('click', this.logIn.bind(this));
+    form.addEventListener('submit', this.handleSubmit.bind(this));
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+  }
+
+  initializeExtension() {
+    console.log(this.uid);
+    console.log(this.isOn);
+    if (this.uid && this.isOn) {
+      document.querySelector('#sign-in-form').style.display = 'none';
+    }
   }
 
   receiveUID() {
     return getUID((uid) => {
+      this.uid = uid;
+      this.initializeExtension();
       if (uid) {
         return uid;
       } else {
@@ -25,21 +41,41 @@ class App {
     });
   }
 
-  signIn(e) {
-    e.preventDefault();
-
+  logIn() {
     const femail = document.querySelector('#email');
     const fpassword = document.querySelector('#password');
 
     $.ajax({
       type: "POST",
-      url: 'http://10.33.2.152:3000/api/signin/',
+      url: 'http://10.33.2.152:3000/api/login/',
       data: {
         "email": femail.value,
         "password": fpassword.value
       },
       success: function(response) {
-        console.log(response);
+        this.uid = response;
+        saveState(this.isOn, response);
+      }
+    })
+
+    femail.value = "";
+    fpassword.value = "";
+  }
+
+  signUp() {
+    const femail = document.querySelector('#email');
+    const fpassword = document.querySelector('#password');
+
+    $.ajax({
+      type: "POST",
+      url: 'http://10.33.2.152:3000/api/signup/',
+      data: {
+        "email": femail.value,
+        "password": fpassword.value
+      },
+      success: function(response) {
+        this.uid = response;
+        saveState(this.isOn, response);
       }
     })
 
@@ -48,17 +84,17 @@ class App {
   }
 
   getCurrentState() {
-    return getOnOffState((savedStatus) => {
-      this.isOn = savedStatus;
-      if (savedStatus) {
-        this.turnOnOffExtension();
+    return getStatus((status) => {
+      this.isOn = status;
+      this.turnOnOffExtension();
+      this.uid = this.receiveUID();
+      if (this.isOn) {
         return true;
       } else {
-        const button = document.querySelector('#sign-in');
+        const button = document.querySelector('.sign-in');
         button.disabled = true;
         button.dataset.opacity = 0;
         button.style.background = '#424242';
-        this.turnOnOffExtension();
         return false;
       }
     });
@@ -125,7 +161,7 @@ class App {
       });
     }
 
-    saveOnOffState(this.isOn);
+    saveState(this.isOn, this.uid);
   }
 }
 

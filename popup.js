@@ -1,11 +1,10 @@
-
 class App {
   constructor(selectors) {
     const onSwitch = document.querySelector(selectors.extensionSwitch);
 
     onSwitch.addEventListener('mouseover', this.changeImage.bind(this));
     onSwitch.addEventListener('mouseout', this.changeImage.bind(this));
-    // onSwitch.addEventListener('mouseover');
+    onSwitch.addEventListener('click');
   }
 
   changeImage(e) {

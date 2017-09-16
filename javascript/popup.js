@@ -3,11 +3,12 @@ class App {
     const onSwitch = document.querySelector(selectors.extensionSwitch);
     const form = document.querySelector(selectors.form);
 
+    chrome.storage.local.clear();
+
     this.initializeRipple();
 
     let uid;
-    let isOn;
-    let run = 0;
+    let isOn = false;
     this.getCurrentState();
 
     onSwitch.addEventListener('mouseover', this.changeImage.bind(this));
@@ -23,24 +24,41 @@ class App {
   }
 
   initializeExtension() {
-    console.log(this.uid);
-    console.log(this.isOn);
-    if (this.uid && this.isOn) {
-      document.querySelector('#sign-in-form').style.visibility = 'hidden';
-      document.querySelector('#sign-in-form').style.height = '0px';
-      document.querySelector('#web-app-links').style.visibility = 'visible';
-      document.querySelector('#web-app-links').style.height = '1px';
-    } else {
-      document.querySelector('#web-app-links').style.visibility = 'hidden';
-      document.querySelector('#sign-in-form').style.height = '1px';
-      document.querySelector('#sign-in-form').style.visibility = 'visible';
-      document.querySelector('#web-app-links').style.height = '0px';
-    }
+    this.validate(this.uid);
+  }
+
+  validate(uid) {
+    $.ajax({
+      type: "POST",
+      url: 'http://10.33.2.152:3000/api/validate/',
+      data: {
+        "uid": this.uid,
+      },
+      success: (response) => {
+        this.uid = response;
+        console.log("validate " + this.uid);
+        console.log('validate ' + this.isOn);
+        if (this.uid !== 'null' && this.isOn) {
+          console.log('both exist');
+          document.querySelector('#sign-in-form').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '0px';
+          document.querySelector('#web-app-links').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '1px';
+        } else {
+          console.log('one does not exist');
+          document.querySelector('#web-app-links').style.visibility = 'hidden';
+          document.querySelector('#sign-in-form').style.height = '1px';
+          document.querySelector('#sign-in-form').style.visibility = 'visible';
+          document.querySelector('#web-app-links').style.height = '0px';
+        }
+      }
+    })
   }
 
   receiveUID() {
     return getUID((uid) => {
       this.uid = uid;
+      console.log("receive id " + this.uid);
       this.initializeExtension();
       if (uid) {
         return uid;
@@ -61,9 +79,11 @@ class App {
         "email": femail.value,
         "password": fpassword.value
       },
-      success: function(response) {
+      success: (response) => {
+        console.log("log in " + response);
         this.uid = response;
         saveState(this.isOn, response);
+        this.initializeExtension();
       }
     })
 
@@ -83,8 +103,10 @@ class App {
         "password": fpassword.value
       },
       success: function(response) {
+        console.log("sign up " + response);
         this.uid = response;
         saveState(this.isOn, response);
+        this.initializeExtension();
       }
     })
 
@@ -95,6 +117,7 @@ class App {
   getCurrentState() {
     return getStatus((status) => {
       this.isOn = status;
+      console.log('status ' + this.isOn);
       this.turnOnOffExtension();
       this.uid = this.receiveUID();
       if (this.isOn) {
@@ -144,7 +167,6 @@ class App {
     if (this.isOn) {
       const powerImage = document.querySelector('#extension-switch > img');
       powerImage.src = 'assets/power_button_green.png';
-      this.isOn = true;
 
       const button = document.querySelectorAll('button').forEach((button) => {
         button.disabled = false;
@@ -158,7 +180,6 @@ class App {
     } else {
       const powerImage = document.querySelector('#extension-switch > img');
       powerImage.src = 'assets/power_button.png';
-      this.isOn = false;
 
       const button = document.querySelectorAll('button').forEach((button) => {
         button.disabled = true;

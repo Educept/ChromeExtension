@@ -4,9 +4,18 @@ class App {
 
     this.initializeRipple();
 
+    let isOn = false;
+
+    if (!isOn) {
+      const button = document.querySelector('#sign-in');
+      button.disabled = true;
+      button.dataset.opacity = 0;
+      button.style.background = '#424242';
+    }
+
     onSwitch.addEventListener('mouseover', this.changeImage.bind(this));
     onSwitch.addEventListener('mouseout', this.changeImage.bind(this));
-    // onSwitch.addEventListener('click');
+    onSwitch.addEventListener('click', this.turnOnExtension.bind(this));
   }
 
   initializeRipple() {
@@ -29,9 +38,20 @@ class App {
 
     if (e.type == 'mouseover') {
       powerImage.src = 'assets/power_button_green.png';
-    } else {
+    } else if (!this.isOn) {
       powerImage.src = 'assets/power_button.png';
     }
+  }
+
+  turnOnExtension() {
+    const powerImage = document.querySelector('#extension-switch > img');
+    powerImage.src = 'assets/power_button_green.png';
+    this.isOn = true;
+
+    const button = document.querySelector('#sign-in');
+    button.disabled = false;
+    button.dataset.opacity = 0.4;
+    button.style.background = '#2196F3';
   }
 }
 

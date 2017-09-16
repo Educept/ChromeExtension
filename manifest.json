@@ -14,6 +14,6 @@
     "storage"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["javascript/background.js"]
   }
 }

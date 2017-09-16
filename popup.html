@@ -17,13 +17,28 @@
       <img src="assets/power_button.png" alt="Power Button" height="100" width="100" title="turn on extension">
     </div>
 
-    <div class="center">
-      <button class="btn" id="sign-in" type="button">
-        <span id="login-text">Login with</span>
-        <i class="fa fa-google" aria-hidden="true"></i> 
-      </button>
-    </div>
+    <form id="sign-in-form">
+      <div class="group">
+          <input type="text" placeholder="Gmail" id="email">
+          <label for="email">Gmail</label>
+        </div>
+        <div class="group">
+          <input type="text" placeholder="Password" id="password">
+          <label for="password">Password</label>
+        </div>
+    
+        <div class="center">
+          <button class="btn" id="sign-in" type="submit">
+            <span id="login-text">Sign in with</span>
+            <i class="fa fa-google" aria-hidden="true"></i> 
+          </button>
+        </div>
+    </form>
 
+
+    
+
+    <script src="javascript/background.js"></script>
     <script src="javascript/jquery-3.2.1.min.js"></script>
     <script src="javascript/ripple.min.js"></script>
     <script src="javascript/popup.js"></script>   

@@ -5,6 +5,7 @@ class App {
 
     this.initializeRipple();
 
+    let uid = this.receiveUID();
     let isOn;
     this.getCurrentState();
 
@@ -12,6 +13,16 @@ class App {
     onSwitch.addEventListener('mouseout', this.changeImage.bind(this));
     onSwitch.addEventListener('click', this.switchState.bind(this));
     form.addEventListener('submit', this.signIn.bind(this));
+  }
+
+  receiveUID() {
+    return getUID((uid) => {
+      if (uid) {
+        return uid;
+      } else {
+        return null;
+      }
+    });
   }
 
   signIn(e) {
@@ -24,13 +35,12 @@ class App {
       type: "POST",
       url: 'http://10.33.2.152:3000/api/signin/',
       data: {
-        'email': femail.value,
-        'password': fpassword.value
+        "email": femail.value,
+        "password": fpassword.value
       },
       success: function(response) {
         console.log(response);
       }
-      // dataType: 'text'
     })
 
     femail.value = "";
@@ -90,10 +100,11 @@ class App {
       powerImage.src = 'assets/power_button_green.png';
       this.isOn = true;
 
-      const button = document.querySelector('#sign-in');
-      button.disabled = false;
-      button.dataset.opacity = 0.4;
-      button.style.background = '#2196F3';
+      const button = document.querySelectorAll('button').forEach((button) => {
+        button.disabled = false;
+        button.dataset.opacity = 0.4;
+        button.style.background = '#2196F3';
+      });
 
       const inputs = document.querySelectorAll('input').forEach((input) => {
         input.disabled = false;
@@ -103,10 +114,11 @@ class App {
       powerImage.src = 'assets/power_button.png';
       this.isOn = false;
 
-      const button = document.querySelector('#sign-in');
-      button.disabled = true;
-      button.dataset.opacity = 0;
-      button.style.background = '#424242';
+      const button = document.querySelectorAll('button').forEach((button) => {
+        button.disabled = true;
+        button.dataset.opacity = 0;
+        button.style.background = '#424242';
+      });
 
       const inputs = document.querySelectorAll('input').forEach((input) => {
         input.disabled = true;

@@ -22,19 +22,16 @@ body {
   margin-bottom: 10px;
 }
 
-#sign-in {
+.sign-in {
   margin-top: 20px; 
+  margin-left: 5px;
+  margin-right: 10px;
   font-size: 20px !important;
-}
-
-#login-text {
-  margin-right: 4px;
 }
 
 .center {
   text-align: center;
 }
-
 
 input:placeholder-shown + label {
   opacity:0;
@@ -42,7 +39,7 @@ input:placeholder-shown + label {
 }
 
 input {
-  width: 176px;
+  width: 236px;
   padding:10px;
   margin-top: 20px;
   border:2px solid black;
@@ -51,7 +48,7 @@ input {
 }
 
 .group {
-  width: 200px;
+  width: 250px;
   position: relative;
   margin: 0 auto;
 }

@@ -7,6 +7,7 @@ class App {
 
     let uid;
     let isOn;
+    let run = 0;
     this.getCurrentState();
 
     onSwitch.addEventListener('mouseover', this.changeImage.bind(this));
@@ -25,7 +26,15 @@ class App {
     console.log(this.uid);
     console.log(this.isOn);
     if (this.uid && this.isOn) {
-      document.querySelector('#sign-in-form').style.display = 'none';
+      document.querySelector('#sign-in-form').style.visibility = 'hidden';
+      document.querySelector('#sign-in-form').style.height = '0px';
+      document.querySelector('#web-app-links').style.visibility = 'visible';
+      document.querySelector('#web-app-links').style.height = '1px';
+    } else {
+      document.querySelector('#web-app-links').style.visibility = 'hidden';
+      document.querySelector('#sign-in-form').style.height = '1px';
+      document.querySelector('#sign-in-form').style.visibility = 'visible';
+      document.querySelector('#web-app-links').style.height = '0px';
     }
   }
 
@@ -128,6 +137,7 @@ class App {
   switchState(e) {
     this.isOn = !this.isOn;
     this.turnOnOffExtension();
+    this.initializeExtension();
   }
 
   turnOnOffExtension() {

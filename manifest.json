@@ -6,15 +6,27 @@
   "version": "1.0",
 
   "browser_action": {
-    // "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
   "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
     "activeTab",
     "storage",
+    "<all_urls>",
     "http://10.33.2.152:3000/"
   ],
+  "content_scripts": [
+  {
+    "matches": [
+      "<all_urls>"
+    ],
+    "js": ["javascript/jquery-3.2.1.min.js", "javascript/content.js"]
+  }
+],
   "background": {
-    "scripts": ["javascript/background.js"]
+    "scripts": ["javascript/jquery-3.2.1.min.js", "javascript/background.js", "javascript/content.js"],
+    "persistent": true
   }
 }

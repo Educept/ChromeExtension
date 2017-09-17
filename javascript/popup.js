@@ -1,3 +1,5 @@
+let uid;
+
 class App {
   constructor(selectors) {
     const onSwitch = document.querySelector(selectors.extensionSwitch);
@@ -7,7 +9,6 @@ class App {
 
     this.initializeRipple();
 
-    let uid;
     let isOn = false;
     this.getCurrentState();
 
@@ -17,6 +18,13 @@ class App {
     document.querySelector('#signup').addEventListener('click', this.signUp.bind(this));
     document.querySelector('#login').addEventListener('click', this.logIn.bind(this));
     form.addEventListener('submit', this.handleSubmit.bind(this));
+    document.querySelector(selectors.practiceButton).addEventListener('click', this.practiceRoute.bind(this));
+  }
+
+  practiceRoute() {
+    chrome.tabs.update({
+      url: `http://localhost:3000/practice/${uid}/`
+    });
   }
 
   handleSubmit(e) {
@@ -24,19 +32,19 @@ class App {
   }
 
   initializeExtension() {
-    this.validate(this.uid);
+    this.validate(uid);
   }
 
-  validate(uid) {
+  validate(uidv) {
     $.ajax({
       type: "POST",
       url: 'http://10.33.2.152:3000/api/validate/',
       data: {
-        "uid": this.uid,
+        "uid": uid,
       },
       success: (response) => {
-        this.uid = response;
-        if (this.uid !== 'null' && this.isOn) {
+        uid = response;
+        if (uid !== 'null' && this.isOn) {
           document.querySelector('#sign-in-form').style.visibility = 'hidden';
           document.querySelector('#sign-in-form').style.height = '0px';
           document.querySelector('#web-app-links').style.visibility = 'visible';
@@ -52,11 +60,11 @@ class App {
   }
 
   receiveUID() {
-    return getUID((uid) => {
-      this.uid = uid;
+    return getUID((uidv) => {
+      uid = uidv;
       this.initializeExtension();
-      if (uid) {
-        return uid;
+      if (uidv) {
+        return uidv;
       } else {
         return null;
       }
@@ -76,10 +84,10 @@ class App {
       },
       success: (response) => {
         console.log(response);
-        this.uid = response;
+        uid = response;
         saveState(this.isOn, response);
 
-        if (this.uid !== 'null' && this.isOn) {
+        if (uid !== 'null' && this.isOn) {
           document.querySelector('#sign-in-form').style.visibility = 'hidden';
           document.querySelector('#sign-in-form').style.height = '0px';
           document.querySelector('#web-app-links').style.visibility = 'visible';
@@ -109,10 +117,10 @@ class App {
         "password": fpassword.value
       },
       success: function(response) {
-        this.uid = response;
+        uid = response;
         saveState(this.isOn, response);
 
-        if (this.uid !== 'null' && this.isOn) {
+        if (uid !== 'null' && this.isOn) {
           document.querySelector('#sign-in-form').style.visibility = 'hidden';
           document.querySelector('#sign-in-form').style.height = '0px';
           document.querySelector('#web-app-links').style.visibility = 'visible';
@@ -134,7 +142,7 @@ class App {
     return getStatus((status) => {
       this.isOn = status;
       this.turnOnOffExtension();
-      this.uid = this.receiveUID();
+      uid = this.receiveUID();
       if (this.isOn) {
         return true;
       } else {
@@ -207,11 +215,12 @@ class App {
       });
     }
 
-    saveState(this.isOn, this.uid);
+    saveState(this.isOn, uid);
   }
 }
 
 new App({
   extensionSwitch: '#extension-switch',
   form: '#sign-in-form',
+  practiceButton: '#web-app-links',
 })
